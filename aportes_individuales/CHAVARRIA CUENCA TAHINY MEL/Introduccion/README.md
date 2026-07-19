@@ -1,0 +1,7 @@
+Estudiante: CHAVARRIA CUENCA TAHINY MEL
+
+Introduccion del documento sobre BOUML y su aplicacion en el PFC "MundiPets"
+Equipo H:
+-CHAVARRIA CUENCA TAHINY MEL
+-MENDOZA PARRAGA ANDY JOEL
+-SANCHEZ CORNEJO GARY ALBERTO
