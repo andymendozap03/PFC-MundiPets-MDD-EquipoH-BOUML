@@ -1,0 +1,9 @@
+window_sizes 1800 892 450 1344 710 128
+
+show_stereotypes
+selected usecasediagram_ref 134658 // Diagrama de Casos de Uso del subsistema
+open
+  classview_ref 128130 // Clases
+  usecaseview_ref 134530 // CasosUso
+end
+end

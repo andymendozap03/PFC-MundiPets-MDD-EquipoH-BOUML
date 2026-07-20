@@ -1,0 +1,55 @@
+format 224
+
+classcanvas 128130 class_ref 128258 // Propietario
+  simpleclassdiagramsettings end
+  xyz 18.4 273 2000
+end
+classcanvas 128258 class_ref 128386 // Veterinario
+  simpleclassdiagramsettings end
+  xyz 704.3 289.9 2000
+end
+subject 128386 ""
+  xyzwh 121.9 24.2 2000 532 617
+usecasecanvas 128514 usecase_ref 134530 // Registrar mascota
+  color transparent
+  xyzwh 277.7 46.8 3005 217 83 label_xy 332 80
+end
+usecasecanvas 128642 usecase_ref 134658 // Registrar historial medico
+  color transparent
+  xyzwh 343.5 329.7 3005 169 69 label_xy 356 353
+end
+usecasecanvas 128770 usecase_ref 134786 // Cargar documento veterinario
+  color transparent
+  xyzwh 319.7 473 3005 195 65 label_xy 330 497
+end
+usecasecanvas 128898 usecase_ref 134914 // Configurar privacidad medica
+  color transparent
+  xyzwh 203.5 549.4 3005 207 73 label_xy 214 576
+end
+usecasecanvas 129026 usecase_ref 135042 // Consultar perfil medico
+  color transparent
+  xyzwh 341 152.7 3005 170 75 label_xy 357 180
+end
+usecasecanvas 129154 usecase_ref 135170 // Validar informacion medica
+  color transparent
+  xyzwh 317.9 241.6 3005 179 68 label_xy 326 264
+end
+line 129282 ---- decenter_end 472
+  from ref 128130 z 3006 to ref 128514
+line 129538 ---- decenter_end 538
+  from ref 128130 z 3006 to ref 128642
+line 129666 ---- decenter_end 418
+  from ref 128130 z 3006 to ref 128770
+line 129794 ---- decenter_end 446
+  from ref 128130 z 3006 to ref 128898
+line 129922 ---- decenter_end 541
+  from ref 128130 z 3006 to ref 129026
+line 130050 ---- decenter_end 421
+  from ref 128258 z 3006 to ref 129026
+line 130178 ---- decenter_end 453
+  from ref 128258 z 3006 to ref 129154
+simplerelationcanvas 130434 simplerelation_ref 134530
+  decenter_end 437
+  from ref 128770 z 3006 stereotype "<<extend>>" xyz 432 429 3000 to ref 128642
+end
+end
