@@ -126,7 +126,7 @@ Encargado del diseño, tipificación y normalización del diagrama de clases est
 
 ### Sánchez Cornejo Gary Alberto
 
-Responsable de la fundamentación analítica de las transformaciones **M2M/M2T**, metamodelos y plantillas en el marco conceptual. Configuró globalmente el generador físico del entorno CASE, ajustó el mapeo asociativo mediante contenedores vectoriales `std::vector` y codificó la unidad demostrativa `main.cpp`.
+Responsable de la fundamentación analítica de las transformaciones **M2M/M2T**, metamodelos y plantillas en el marco conceptual. Configuró globalmente el generador físico del entorno CASE (rutas de salida, extensiones `.h`/`.cpp`, guardas de inclusión) y evaluó la representación de multiplicidades múltiples mediante punteros simples frente a contenedores `std::vector`, documentando la decisión final del equipo de conservar la plantilla nativa de puntero simple (ver limitación en la Sección 7.3 del informe). Codificó la unidad demostrativa `main.cpp` y las pruebas de compilación nativa con `g++`.
 
 ### Chavarría Cuenca Tahiny Mel
 

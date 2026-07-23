@@ -340,12 +340,12 @@ doi=true
 			\hline
 			\textbf{ID} & \textbf{Requisito} & \textbf{Descripción} \\
 			\hline
-			\textbf{RF-01} & Registrar mascota & Permitir al propietario registrar una mascota ingresando su información general, incluyendo nombre, especie, raza, sexo, edad, estado reproductivo y fotografías para su identificación dentro de la plataforma. \\ \hline
-			\textbf{RF-02} & Gestionar historial médico & Permitir registrar y actualizar el historial médico de una mascota, incluyendo vacunas, desparasitaciones, enfermedades, alergias, cirugías, tratamientos y controles veterinarios. \\ \hline
-			\textbf{RF-03} & Consultar perfil completo & Permitir visualizar el perfil completo de una mascota mostrando su información general, historial médico autorizado, fotografías, comportamiento, vacunas, edad, raza para procesos de adopción o cruza. \\ \hline
-			\textbf{RF-09} & Validar información médica & Permitir que una veterinaria autorizada valide la información médica registrada de una mascota, indicando que los datos han sido verificados por un profesional. \\ \hline
-			\textbf{RF-14} & Gestionar carnet de vacunación & Permitir registrar, actualizar y consultar el carnet de vacunación de cada mascota, mostrando el historial de vacunas aplicadas, fechas, próximas dosis y su estado de vigencia. \\ \hline
-			\textbf{RF-16} & Gestionar antecedentes genéticos & Permitir registrar y consultar los antecedentes genéticos y el grado de parentesco de una mascota, incluyendo linaje para procesos de cruza responsable. \\
+			\textbf{RF-01} & Registrar mascota & El sistema deberá permitir al propietario registrar una mascota ingresando su información general, incluyendo nombre, especie, raza, sexo, edad, estado reproductivo y fotografías para su identificación dentro de la plataforma. \\ \hline
+			\textbf{RF-02} & Gestionar historial médico & El sistema deberá permitir registrar y actualizar el historial médico de una mascota, incluyendo vacunas, desparasitaciones, enfermedades, alergias, cirugías, tratamientos y controles veterinarios. \\ \hline
+			\textbf{RF-03} & Consultar perfil completo & El sistema deberá permitir visualizar el perfil completo de una mascota mostrando su información general, historial médico autorizado, fotografías, comportamiento, vacunas, edad, raza para procesos de adopción o cruza. \\ \hline
+			\textbf{RF-09} & Validar información médica & El sistema deberá permitir que una veterinaria autorizada valide la información médica registrada de una mascota, indicando que los datos han sido verificados por un profesional. \\ \hline
+			\textbf{RF-14} & Gestionar carnet de vacunación & El sistema deberá permitir registrar, actualizar y consultar el carnet de vacunación de cada mascota, mostrando el historial de vacunas aplicadas, fechas, próximas dosis y su estado de vigencia. \\ \hline
+			\textbf{RF-16} & Gestionar antecedentes genéticos & El sistema deberá permitir registrar y consultar los antecedentes genéticos y el grado de parentesco de una mascota, incluyendo información sobre enfermedades hereditarias y linaje para apoyar los procesos de cruza responsable y la evaluación de compatibilidad. \\
 			\hline
 		\end{tabularx}
 	\end{table}
@@ -481,7 +481,7 @@ doi=true
 	\end{figure}
 	
 	\subsection{Política de regeneración y decisiones de mapeo}
-	La pestaña \textit{C++[3]} del generador confirmó las plantillas exactas que BOUML aplica según el tipo de relación: un atributo simple se declara como \${type} \${name}\${value};, mientras que las relaciones de asociación, agregación y composición con multiplicidad múltiple (*) se declaran anteponiendo un asterisco al nombre (\${type} * \${name}\${value};), es decir, mediante un puntero simple y no mediante un contenedor STL por defecto. En consecuencia, la asociación \textit{Propietario} (1) $\leftrightarrow$ \textit{Mascota} (0..*) se mapeó explícitamente a vector<Mascota*> mascotas; en Propietario.h, sustituyendo la plantilla nativa de puntero simple por el tipo contenedor vector definido en la pestaña \textit{C++[5]}, que ya incluye su \#include <vector> y using namespace std; correspondientes. Las operaciones de acceso (\textit{getters}/\textit{setters}) se generaron siguiendo la plantilla de la pestaña \textit{C++[4]}: los métodos get\_\${name} se generan públicos, inline y const, mientras que los set\_\${name} se generan públicos sin modificadores adicionales, motivo por el cual el equipo ajustó manualmente la visibilidad y el calificador const de algunas operaciones críticas del dominio dentro de los bloques protegidos.
+	La pestaña \textit{C++[3]} del generador confirmó las plantillas exactas que BOUML aplica según el tipo de relación: un atributo simple se declara como \${type} \${name}\${value};, mientras que las relaciones de asociación, agregación y composición con multiplicidad múltiple (*) se declaran anteponiendo un asterisco al nombre (\${type} * \${name}\${value};), es decir, mediante un puntero simple y no mediante un contenedor STL por defecto. Se evaluó la posibilidad de sustituir esta plantilla nativa por el tipo contenedor \texttt{vector} definido en la pestaña \textit{C++[5]} (que ya incluye su \#include <vector> y using namespace std; correspondientes) para las asociaciones con multiplicidad múltiple, como \textit{Propietario} (1) $\leftrightarrow$ \textit{Mascota} (0..*). Sin embargo, para mantener fiel el criterio de trazabilidad directa con la plantilla auditada por BOUML, el equipo decidió conservar la plantilla nativa de puntero simple sin modificarla; en consecuencia, en el código final generado \textbf{todas las asociaciones con multiplicidad múltiple se representan mediante un puntero simple} (\texttt{Mascota * mascotas;} en Propietario.h, \texttt{EvaluacionVeterinaria * evaluaciones;} en Mascota.h, etc.), y no mediante contenedores \texttt{vector}. Esta decisión implica una limitación funcional real: un puntero simple solo puede referenciar un elemento a la vez, por lo que la navegación 1--N declarada en el modelo no queda completamente representada en el código físico; esta discrepancia se documenta como limitación en la Sección 7.3. Las operaciones de acceso (\textit{getters}/\textit{setters}) se generaron siguiendo la plantilla de la pestaña \textit{C++[4]}: los métodos get\_\${name} se generan públicos, inline y const, mientras que los set\_\${name} se generan públicos sin modificadores adicionales; sin embargo, BOUML no genera estas operaciones automáticamente por defecto para los atributos del modelo (ver limitaciones, Sección 7.3), por lo que no se aplicaron sobre el código final entregado.
 	
 	% ============================================================
 	% 6. PROCESO DE GENERACIÓN
@@ -567,19 +567,21 @@ doi=true
 			Generalización Usuario $\to$ Propietario & class Propietario : public Usuario en Propietario.h \\ \hline
 			Asociación 1--N Propietario (1) $\leftrightarrow$ Mascota (0..*) & Puntero Propietario * propietario; en Mascota.h, y Mascota * mascotas; en Propietario.h \\ \hline
 			Composición Mascota $\blacklozenge$ HistorialMedico (1:1) & Miembro por valor HistorialMedico historial; en Mascota.h \\ \hline
-			Asociación 1--N Mascota (1) $\leftrightarrow$ EvaluacionVeterinaria (0..*) & Contenedor vector<EvaluacionVeterinaria *> evaluaciones; en Mascota.h \\ \hline
-			Asociación 1--N Veterinario (1) $\leftrightarrow$ EvaluacionVeterinaria (0..*) & Contenedor vector<EvaluacionVeterinaria *> evaluacionesRegistradas; en Veterinario.h \\ \hline
-			Clase asociativa MascotaVacuna & MascotaVacuna.h / MascotaVacuna.cpp, referenciada desde Vacuna.h mediante vector<MascotaVacuna *> aplicaciones; \\ \hline
+			Asociación 1--N Mascota (1) $\leftrightarrow$ EvaluacionVeterinaria (0..*) & Puntero EvaluacionVeterinaria * evaluaciones; en Mascota.h \\ \hline
+			Asociación 1--N Veterinario (1) $\leftrightarrow$ EvaluacionVeterinaria (0..*) & Puntero EvaluacionVeterinaria * evaluacionesRegistradas; en Veterinario.h \\ \hline
+			Clase asociativa MascotaVacuna & MascotaVacuna.h / MascotaVacuna.cpp; a diferencia de lo planificado, el generador \textbf{no} produjo ninguna referencia por puntero ni por contenedor \texttt{vector} entre \texttt{Vacuna.h} y \texttt{MascotaVacuna}: el vínculo quedó resuelto únicamente mediante los atributos \texttt{idMascota} e \texttt{idVacuna} (tipo \texttt{long}) declarados dentro de \texttt{MascotaVacuna.h}, a modo de clave foránea, sin navegabilidad por objeto (ver limitación en Sección 7.3) \\ \hline
 		\end{tabularx}
 	\end{table}
 	
 	\subsection{Limitaciones detectadas}
-	Durante el proceso de generación y verificación se identificaron cuatro limitaciones concretas del generador C++ de BOUML, todas corregidas manualmente antes de lograr una compilación exitosa:
+	Durante el proceso de generación y verificación se identificaron seis limitaciones concretas del generador C++ de BOUML frente al alcance planificado en la Sección 6.2:
 	\begin{itemize}
 		\item \textbf{Plantilla de asociación dependiente de un estereotipo vacío.} La plantilla por defecto incluía el marcador de estereotipo entre símbolos de plantilla de tipo. Cuando la asociación no tenía un estereotipo asignado, se sustituía por una cadena vacía dejando los símbolos de apertura y cierre sueltos en el código generado, provocando errores de compilación.
 		\item \textbf{Asociaciones sin nombre de rol generadas como atributos anónimos.} Algunas asociaciones quedaron registradas sin un nombre de rol asignado, lo que BOUML tradujo como una declaración de atributo sin identificador, inválida en C++. Estas asociaciones debieron eliminarse individualmente.
-		\item \textbf{Ausencia de directivas de inclusión automáticas para tipos contenedor.} El tipo vector no generó automáticamente su directiva de inclusión correspondiente en todos los archivos de cabecera, requiriendo verificación manual.
+		\item \textbf{Contenedores \texttt{vector} no aplicados al entregable final.} Aunque la pestaña C++[5] del generador permite resolver tipos contenedores externos, el equipo optó por conservar la plantilla nativa de puntero simple en todas las asociaciones con multiplicidad múltiple. En consecuencia, el código final (\texttt{Propietario.h}, \texttt{Mascota.h}, \texttt{Veterinario.h}) no contiene ningún \texttt{vector}, y la navegación 1--N declarada en el modelo queda representada de forma incompleta: un puntero simple solo puede apuntar a un elemento a la vez.
+		\item \textbf{Clase asociativa MascotaVacuna sin navegabilidad por objeto.} A diferencia de lo previsto, el generador no produjo ningún puntero entre \texttt{Vacuna} y \texttt{MascotaVacuna} (ni viceversa); el vínculo quedó resuelto únicamente mediante los atributos \texttt{idMascota} e \texttt{idVacuna} (tipo \texttt{long}) dentro de \texttt{MascotaVacuna.h}, a modo de clave foránea sin relación de objetos en memoria.
 		\item \textbf{Ausencia de métodos de acceso (getters y setters) generados por defecto.} BOUML no genera automáticamente estos métodos para los atributos; requiere definirlos explícitamente. Se optó por exponer como públicos los atributos estrictamente necesarios para la demostración como una simplificación deliberada.
+		\item \textbf{Cuerpo de operación generado sin sentencia \texttt{return}.} La operación \texttt{float Mascota::calcularDosisRecomendada()}, incorporada durante el roundtrip (Sección 9), se generó con el cuerpo vacío. El compilador \texttt{g++} advierte \textit{``no return statement in function returning non-void''}; el código compila y enlaza, pero el valor devuelto por esta operación es indefinido hasta que el equipo complete manualmente su lógica de negocio.
 	\end{itemize}
 	
 	% ============================================================
@@ -594,7 +596,7 @@ doi=true
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.8\textwidth]{figuras/despues_modelo.png}
+		\includegraphics[width=0.75\textwidth]{figuras/despues_modelo.png}
 		\caption{Diagrama de clases de la entidad Mascota en BOUML tras incorporar el atributo pesoKg y la operación calcularDosisRecomendada.}
 		\label{fig:despues_modelo}
 	\end{figure}
@@ -606,7 +608,7 @@ doi=true
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.65\textwidth]{figuras/diff_codigo.png}
+		\includegraphics[width=0.5\textwidth]{figuras/diff_codigo.png}
 		\caption{Evidencia de la traza de comparación (diff) reflejando la inserción exacta del nuevo atributo y método en Mascota.h respetando los bloques protegidos.}
 		\label{fig:diff_codigo}
 	\end{figure}
@@ -654,7 +656,7 @@ doi=true
 		
 		\item \textbf{Sánchez Cornejo Gary Alberto}
 		\begin{itemize}
-			\item \textit{Foco de contribución técnica:} Fundamentación teórica de las transformaciones M2M/M2T, metamodelos y plantillas del marco conceptual; parametrización global del motor de generación física (rutas de salida, extensiones .h/.cpp, guardas de inclusión) y ajuste de multiplicidades múltiples mediante contenedores \texttt{std::vector}; codificación de la unidad demostrable \texttt{main.cpp} y pruebas de compilación nativa con g++.
+			\item \textit{Foco de contribución técnica:} Fundamentación teórica de las transformaciones M2M/M2T, metamodelos y plantillas del marco conceptual; parametrización global del motor de generación física (rutas de salida, extensiones .h/.cpp, guardas de inclusión) y evaluación de la representación de multiplicidades múltiples mediante punteros simples frente a contenedores \texttt{std::vector} (documentada como limitación en la Sección 7.3); codificación de la unidad demostrable \texttt{main.cpp} y pruebas de compilación nativa con g++.
 			\item \textit{Historial completo de Commits:} \\
 			\url{https://github.com/andymendozap03/PFC-MundiPets-MDD-EquipoH-BOUML/commits?author=gsanchezc6-beep}
 		\end{itemize}
@@ -674,11 +676,11 @@ doi=true
 	
 	\begin{figure}[H]
 		\centering
-		\includegraphics[width=0.85\textwidth]{figuras/github_contributors.png}
+		\includegraphics[width=0.75\textwidth]{figuras/github_contributors.png}
 		\caption{Métricas de aportes y commits individuales extraídas de la sección Insights/Contributors de GitHub.}
 		\label{fig:github_contributors}
 	\end{figure}
-	\newpage
+
 	% ============================================================
 	% 10. CONCLUSIONES
 	% ============================================================
@@ -693,7 +695,7 @@ doi=true
 	\section{Referencias}
 	
 	\printbibliography[heading=none]
-		
+	
 	\newpage
 	\section*{Anexos}
 	\addcontentsline{toc}{section}{Anexos}
@@ -715,7 +717,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-01 \\ \hline
 			Nombre & Registrar mascota \\ \hline
-			Descripción & Registrar una mascota ingresando su información general, incluyendo nombre, especie, raza, sexo, edad, estado reproductivo y fotografías para su identificación dentro de la plataforma. \\ \hline
+			Descripción & El sistema deberá permitir al propietario registrar una mascota ingresando su información general, incluyendo nombre, especie, raza, sexo, edad, estado reproductivo y fotografías para su identificación dentro de la plataforma. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-02, EV-03, EV-05, EV-06, EV-07, EV-08 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -732,7 +734,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-02 \\ \hline
 			Nombre & Gestionar historial médico de la mascota \\ \hline
-			Descripción & Registrar y actualizar el historial médico de una mascota, incluyendo vacunas, desparasitaciones, enfermedades, alergias, cirugías, tratamientos y controles veterinarios. \\ \hline
+			Descripción & El sistema deberá permitir registrar y actualizar el historial médico de una mascota, incluyendo vacunas, desparasitaciones, enfermedades, alergias, cirugías, tratamientos y controles veterinarios. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-01, EV-02, EV-03, EV-04, EV-05, EV-06, EV-07 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -749,7 +751,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-03 \\ \hline
 			Nombre & Consultar perfil completo de una mascota \\ \hline
-			Descripción & Visualizar el perfil completo de una mascota mostrando su información general, historial médico autorizado, fotografías, comportamiento, vacunas, edad, raza para procesos de adopción o cruza. \\ \hline
+			Descripción & El sistema deberá permitir visualizar el perfil completo de una mascota mostrando su información general, historial médico autorizado, fotografías, comportamiento, vacunas, edad, raza para procesos de adopción o cruza. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-02, EV-04, EV-05, EV-06, EV-07, EV-08 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -766,7 +768,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-09 \\ \hline
 			Nombre & Validar la información médica de una mascota \\ \hline
-			Descripción & Permitir que una veterinaria autorizada valide la información médica registrada de una mascota, indicando que los datos han sido verificados por un profesional. \\ \hline
+			Descripción & El sistema deberá permitir que una veterinaria autorizada valide la información médica registrada de una mascota, indicando que los datos han sido verificados por un profesional. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-03, EV-05, EV-07 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -783,7 +785,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-14 \\ \hline
 			Nombre & Gestionar carnet de vacunación \\ \hline
-			Descripción & Registrar, actualizar y consultar el carnet de vacunación de cada mascota, mostrando el historial de vacunas aplicadas, fechas, próximas dosis y su estado de vigencia. \\ \hline
+			Descripción & El sistema deberá permitir registrar, actualizar y consultar el carnet de vacunación de cada mascota, mostrando el historial de vacunas aplicadas, fechas, próximas dosis y su estado de vigencia. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-02, EV-03, EV-05, EV-06, EV-07 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -800,7 +802,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-16 \\ \hline
 			Nombre & Gestionar antecedentes genéticos y parentesco de la mascota \\ \hline
-			Descripción & Registrar y consultar los antecedentes genéticos y el grado de parentesco de una mascota, incluyendo linaje para apoyar los procesos de cruza responsable. \\ \hline
+			Descripción & El sistema deberá permitir registrar y consultar los antecedentes genéticos y el grado de parentesco de una mascota, incluyendo información sobre enfermedades hereditarias y linaje para apoyar los procesos de cruza responsable y la evaluación de compatibilidad. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-01, EV-03, EV-05, EV-07 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -819,7 +821,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-04 \\ \hline
 			Nombre & Buscar y filtrar mascotas \\ \hline
-			Descripción & Buscar mascotas aplicando filtros como especie, raza, edad, ubicación, estado de salud y disponibilidad para adopción o cruza. \\ \hline
+			Descripción & El sistema deberá permitir buscar mascotas aplicando filtros como especie, raza, edad, ubicación, estado de salud y disponibilidad para adopción o cruza. \\ \hline
 			Prioridad (MoSCoW) & Should \\ \hline
 			Fuente / Evidencia & EV-07, EV-08 \\ \hline
 			Estabilidad & Media \\ \hline
@@ -836,7 +838,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-05 \\ \hline
 			Nombre & Gestionar solicitudes de adopción \\ \hline
-			Descripción & Permitir que un usuario interesado envíe solicitudes de adopción y que el propietario pueda aceptarlas o rechazarlas. \\ \hline
+			Descripción & El sistema deberá permitir que un usuario interesado envíe solicitudes de adopción y que el propietario pueda aceptarlas o rechazarlas después de revisar la información del solicitante. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-01, EV-02, EV-03, EV-05, EV-06, EV-08 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -853,7 +855,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-06 \\ \hline
 			Nombre & Evaluar compatibilidad entre mascotas para cruza \\ \hline
-			Descripción & Evaluar la compatibilidad entre dos mascotas registradas para procesos de cruza considerando raza, edad, salud y linaje genético. \\ \hline
+			Descripción & El sistema deberá evaluar la compatibilidad entre dos mascotas registradas para procesos de cruza considerando la raza, edad, estado de salud, antecedentes genéticos, parentesco, comportamiento e historial médico, mostrando al usuario el resultado obtenido para apoyar la toma de decisiones. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-01, EV-02, EV-03, EV-04, EV-05, EV-06, EV-07, EV-08 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -870,7 +872,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-07 \\ \hline
 			Nombre & Sistema de mensajería entre usuarios \\ \hline
-			Descripción & Habilitar un canal de comunicación entre dos usuarios registrados cuando exista un proceso de adopción o cruza activo. \\ \hline
+			Descripción & El sistema deberá habilitar un canal de comunicación entre dos usuarios registrados cuando exista un proceso de adopción o cruza activo entre ellos. \\ \hline
 			Prioridad (MoSCoW) & Could \\ \hline
 			Fuente / Evidencia & EV-02, EV-07, EV-08 \\ \hline
 			Estabilidad & Media \\ \hline
@@ -887,7 +889,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-08 \\ \hline
 			Nombre & Gestionar solicitudes de cruza \\ \hline
-			Descripción & Permitir que los propietarios soliciten procesos de cruza entre mascotas y que el receptor pueda aceptar o rechazar la solicitud. \\ \hline
+			Descripción & El sistema deberá permitir que los propietarios soliciten procesos de cruza entre mascotas y que el propietario de la otra mascota pueda aceptar o rechazar la solicitud con base en la información disponible. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-01, EV-02, EV-03, EV-05, EV-06, EV-07 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -904,7 +906,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-10 \\ \hline
 			Nombre & Gestionar recordatorios de controles preventivos \\ \hline
-			Descripción & Enviar un recordatorio al propietario de la mascota antes de la fecha programada de una cita veterinaria y registrar la notificación. \\ \hline
+			Descripción & El sistema deberá enviar un recordatorio al propietario de la mascota antes de la fecha programada de una cita veterinaria y registrar el envío de la notificación. \\ \hline
 			Prioridad (MoSCoW) & Should \\ \hline
 			Fuente / Evidencia & EV-02, EV-04, EV-06 \\ \hline
 			Estabilidad & Media \\ \hline
@@ -921,7 +923,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-11 \\ \hline
 			Nombre & Administrar la privacidad de la información \\ \hline
-			Descripción & Permitir que el propietario determine qué información de su mascota y de su perfil podrá ser visualizada por otros usuarios. \\ \hline
+			Descripción & El sistema deberá permitir que el propietario determine qué información de su mascota y de su perfil podrá ser visualizada por otros usuarios, protegiendo los datos considerados sensibles. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-02, EV-05, EV-06, EV-07, EV-08 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -938,7 +940,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-12 \\ \hline
 			Nombre & Verificar la identidad de los usuarios \\ \hline
-			Descripción & Validar la información obligatoria proporcionada por el usuario antes de aprobar el proceso de verificación de identidad. \\ \hline
+			Descripción & El sistema deberá validar la información obligatoria proporcionada por el usuario antes de aprobar el proceso de verificación de identidad. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-01, EV-03, EV-07, EV-08 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -955,7 +957,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-13 \\ \hline
 			Nombre & Registrar publicaciones de mascotas \\ \hline
-			Descripción & Permitir al propietario publicar una mascota indicando si estará disponible para adopción, cruza o ambas opciones. \\ \hline
+			Descripción & El sistema deberá permitir al propietario publicar una mascota indicando si estará disponible para adopción, cruza o ambas opciones, incluyendo toda la información autorizada del perfil de la mascota. \\ \hline
 			Prioridad (MoSCoW) & Must \\ \hline
 			Fuente / Evidencia & EV-01, EV-02, EV-04, EV-06, EV-07, EV-08 \\ \hline
 			Estabilidad & Alta \\ \hline
@@ -972,7 +974,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-15 \\ \hline
 			Nombre & Consultar el historial de procesos de adopción y cruza \\ \hline
-			Descripción & Permitir al propietario consultar el historial de solicitudes y procesos de adopción y cruza asociados a sus mascotas. \\ \hline
+			Descripción & El sistema deberá permitir al propietario consultar el historial de solicitudes y procesos de adopción y cruza asociados a sus mascotas, incluyendo su estado y fecha de realización. \\ \hline
 			Prioridad (MoSCoW) & Could \\ \hline
 			Fuente / Evidencia & EV-01, EV-02, EV-04, EV-06 \\ \hline
 			Estabilidad & Media \\ \hline
@@ -989,7 +991,7 @@ doi=true
 			\textbf{Atributo} & \textbf{Valor} \\ \hline
 			Identificador & RF-17 \\ \hline
 			Nombre & Validar imágenes de publicaciones \\ \hline
-			Descripción & Validar las imágenes cargadas por los usuarios verificando que cumplan con las políticas de contenido de la plataforma. \\ \hline
+			Descripción & El sistema deberá validar las imágenes cargadas por los usuarios verificando que cumplan con las políticas de contenido establecidas por la plataforma antes de permitir su publicación. \\ \hline
 			Prioridad (MoSCoW) & Should \\ \hline
 			Fuente / Evidencia & EV-01, EV-03, EV-05, EV-07, EV-08 \\ \hline
 			Estabilidad & Media \\ \hline
@@ -1004,372 +1006,372 @@ doi=true
 	
 	A continuación, se detalla la organización física y jerárquica de la raíz del repositorio oficial en GitHub:
 	
-\begin{verbatim}
-	PFC-MundiPets-MDD-EquipoH-BOUML/
-	|   README.md
-	|
-	|-- aportes_individuales/             (Aportes conceptuales y teóricos)
-	|   |-- CHAVARRIA CUENCA TAHINY MEL
-	|   |       Aporte_MelChavarria.pdf
-	|   |       referencias.bib
-	|   |
-	|   |-- MENDOZA PARRAGA ANDY JOHEL
-	|   |       AndyMendoza_Aporte.pdf
-	|   |       referencias.bib
-	|   |
-	|   \-- SANCHEZ CORNEJO GARY ALBERTO
-	|           MarcoTeorico_ERS.pdf
-	|           Referencias_MarcoTeorico.bib
-	|
-	|-- docs/                             (Soporte físico del manuscrito)
-	|   |   informe.pdf
-	|   |   informe.tex
-	|   |   referencias.bib
-	|   |
-	|   \-- figuras/                      (Diagramas y capturas del informe)
-	|
-	|-- evidencias/
-	|   \-- capturas/                     (Capturas del proceso completo)
-	|
-	|-- exposicion/                       (Sustentación académica)
-	|   \-- DiapositivasBOUML.pdf
-	|
-	|-- generado/                         (16 archivos del backend de C++)
-	|   |   *.h / *.cpp                   (8 clases generadas estructuralmente)
-	|   |   main.cpp                      (Unidad demostrable del sistema)
-	|   \-- mundipets_demo.exe            (Ejecutable de prueba g++)
-	|
-	|-- modelo/                           (Proyecto nativo del entorno CASE)
-	|   |   128130.diagram                (Lienzo de Casos de Uso)
-	|   |   134658.diagram                (Lienzo de Clases de origen)
-	|   |   cpp_includes
-	|   |   generation_settings
-	|   |   modelo.prj                    (Árbol del metamodelo en BOUML)
-	|   |   stereotypes
-	|   |   tools
-	|   |
-	|   \-- perfiles/                     (Extensiones del metamodelo)
-	|           stereotypes
-	|
-	\-- plantillas/                       (Parametrización del motor M2T)
-	generation_settings
-\end{verbatim}
-
-\newpage
-\textbf{Anexo C --- Tabla de mapeo extensa (Metamodelo UML a C++)}
-\label{anexo:tabla_mapeo_extensa}
-
-La siguiente matriz documenta la correspondencia semántica y sintáctica detallada entre los elementos conceptuales del diagrama de clases de origen diseñado en BOUML y las estructuras de código fuente físicas resultantes en lenguaje C++ tras la ejecución del motor de ingeniería directa:
-
-\begin{longtable}{|p{3.5cm}|p{3.5cm}|p{4.2cm}|p{3.8cm}|}
-	\hline
-	\textbf{Elemento UML Origen} & \textbf{Estereotipo / Tipo} & \textbf{Estructura Física C++} & \textbf{Archivo de Salida} \\
-	\hline
-	\endfirsthead
-	\hline
-	\textbf{Elemento UML Origen} & \textbf{Estereotipo / Tipo} & \textbf{Estructura Física C++} & \textbf{Archivo de Salida} \\
-	\hline
-	\endhead
-	\hline
-	\footnoterule
-	\endfoot
-	\hline
-	\endlastfoot
-	Clase Usuario & <<Actor>> & class Usuario \{ & Usuario.h \\ \hline
-	Atributo idUsuario & protected long & protected: long idUsuario; & Usuario.h \\ \hline
-	Atributo contrasena & private string & private: string contrasena; & Usuario.h \\ \hline
-	Operación iniciarSesion() & public bool & bool iniciarSesion(); & Usuario.h / .cpp \\ \hline
+	\begin{verbatim}
+		PFC-MundiPets-MDD-EquipoH-BOUML/
+		|   README.md
+		|
+		|-- aportes_individuales/             (Aportes conceptuales y teóricos)
+		|   |-- CHAVARRIA CUENCA TAHINY MEL
+		|   |       Aporte_MelChavarria.pdf
+		|   |       referencias.bib
+		|   |
+		|   |-- MENDOZA PARRAGA ANDY JOHEL
+		|   |       AndyMendoza_Aporte.pdf
+		|   |       referencias.bib
+		|   |
+		|   \-- SANCHEZ CORNEJO GARY ALBERTO
+		|           MarcoTeorico_ERS.pdf
+		|           Referencias_MarcoTeorico.bib
+		|
+		|-- docs/                             (Soporte físico del manuscrito)
+		|   |   informe.pdf
+		|   |   informe.tex
+		|   |   referencias.bib
+		|   |
+		|   \-- figuras/                      (Diagramas y capturas del informe)
+		|
+		|-- evidencias/
+		|   \-- capturas/                     (Capturas del proceso completo)
+		|
+		|-- exposicion/                       (Sustentación académica)
+		|   \-- DiapositivasBOUML.pdf
+		|
+		|-- generado/                         (16 archivos del backend de C++)
+		|   |   *.h / *.cpp                   (8 clases generadas estructuralmente)
+		|   |   main.cpp                      (Unidad demostrable del sistema)
+		|   \-- mundipets_demo.exe            (Ejecutable de prueba g++)
+		|
+		|-- modelo/                           (Proyecto nativo del entorno CASE)
+		|   |   128130.diagram                (Lienzo de Casos de Uso)
+		|   |   134658.diagram                (Lienzo de Clases de origen)
+		|   |   cpp_includes
+		|   |   generation_settings
+		|   |   modelo.prj                    (Árbol del metamodelo en BOUML)
+		|   |   stereotypes
+		|   |   tools
+		|   |
+		|   \-- perfiles/                     (Extensiones del metamodelo)
+		|           stereotypes
+		|
+		\-- plantillas/                       (Parametrización del motor M2T)
+		generation_settings
+	\end{verbatim}
 	
-	Clase Propietario & <<Actor>> & class Propietario : public Usuario \{ & Propietario.h \\ \hline
-	Relación Generalización & Herencia Nativa & : public Usuario & Propietario.h \\ \hline
-	Asociación Propietario $\leftrightarrow$ Mascota & Cardinalidad 0..* & vector<Mascota*> mascotas; & Propietario.h \\ \hline
+	\newpage
+	\textbf{Anexo C --- Tabla de mapeo extensa (Metamodelo UML a C++)}
+	\label{anexo:tabla_mapeo_extensa}
 	
-	Clase Veterinario & <<Actor>> & class Veterinario : public Usuario \{ & Veterinario.h \\ \hline
-	Atributo numLicencia & private string & private: string numLicencia; & Veterinario.h \\ \hline
+	La siguiente matriz documenta la correspondencia semántica y sintáctica detallada entre los elementos conceptuales del diagrama de clases de origen diseñado en BOUML y las estructuras de código fuente físicas resultantes en lenguaje C++ tras la ejecución del motor de ingeniería directa:
 	
-	Clase Mascota & <<Entity>> & class Mascota \{ & Mascota.h \\ \hline
-	Atributo idMascota & public long & public: long idMascota; & Mascota.h \\ \hline
-	Atributo nombre & public string & public: string nombre; & Mascota.h \\ \hline
-	Atributo pesoKg (Mutación) & private float & private: float pesoKg; & Mascota.h \\ \hline
-	Operación calcularDosis() & public float & float calcularDosisRecomendada(); & Mascota.h / .cpp \\ \hline
-	Asociación Mascota $\leftrightarrow$ Propietario & Cardinalidad 1 & Propietario* propietario; & Mascota.h \\ \hline
-	
-	Clase HistorialMedico & <<Entity>> & class HistorialMedico \{ & HistorialMedico.h \\ \hline
-	Composición Mascota $\blacklozenge$ Historial & Cardinalidad 1:1 (Por Valor) & HistorialMedico historial; & Mascota.h \\ \hline
-	
-	Clase Vacuna & <<Entity>> & class Vacuna \{ & Vacuna.h \\ \hline
-	Atributo idVacuna & private long & private: long idVacuna; & Vacuna.h \\ \hline
-	
-	Clase Asociativa MascotaVacuna & <<Entity>> M:N & class MascotaVacuna \{ & MascotaVacuna.h \\ \hline
-	Vínculo MascotaVacuna $\to$ Mascota & Navegación Relacional & Mascota* mascota; & MascotaVacuna.h \\ \hline
-	Vínculo MascotaVacuna $\to$ Vacuna & Navegación Relacional & Vacuna* vacuna; & MascotaVacuna.h \\ \hline
-	Asociación Vacuna $\leftrightarrow$ MascotaVacuna & Cardinalidad Múltiple & vector<MascotaVacuna*> aplicaciones; & Vacuna.h \\ \hline
-	
-	Clase EvaluacionVeterinaria & <<Entity>> & class EvaluacionVeterinaria \{ & EvaluacionVeterinaria.h \\ \hline
-	Asociación Mascota $\to$ Evaluación & Unidireccional 0..* & vector<EvaluacionVeterinaria*> evaluaciones; & Mascota.h \\ \hline
-	Asociación Veterinario $\leftrightarrow$ Evaluación & Bidireccional Simple 0..* & vector<EvaluacionVeterinaria*> evRegistradas; & Veterinario.h \\ \hline
-\end{longtable}
-
-\newpage
-\textbf{Anexo D --- Fragmentos de código fuente representativos}
-\label{anexo:codigo_generado}
-
-A continuación se exponen las definiciones de las estructuras físicas mapeadas e instanciadas por el motor de generación M2T de BOUML para las clases del subsistema sanitario de MundiPets:
-
-\textbf{1. Clase EvaluacionVeterinaria}
-\begin{lstlisting}[caption={Clase EvaluacionVeterinaria (EvaluacionVeterinaria.h).}]
-	#ifndef _EVALUACIONVETERINARIA_H
-	#define _EVALUACIONVETERINARIA_H
-	
-	#include <string>
-	using namespace std;
-	
-	class Veterinario;
-	
-	// <<Entity>>
-	class EvaluacionVeterinaria {
-		private:
-		long idEvaluacionVet;
-		string diagnostico;
-		string observaciones;
-		bool aptitudCruza;
-		bool aptitudAdopcion;
-		string fechaEvaluacion;
+	\begin{longtable}{|p{3.5cm}|p{3.5cm}|p{4.2cm}|p{3.8cm}|}
+		\hline
+		\textbf{Elemento UML Origen} & \textbf{Estereotipo / Tipo} & \textbf{Estructura Física C++} & \textbf{Archivo de Salida} \\
+		\hline
+		\endfirsthead
+		\hline
+		\textbf{Elemento UML Origen} & \textbf{Estereotipo / Tipo} & \textbf{Estructura Física C++} & \textbf{Archivo de Salida} \\
+		\hline
+		\endhead
+		\hline
+		\footnoterule
+		\endfoot
+		\hline
+		\endlastfoot
+		Clase Usuario & <<Actor>> & class Usuario \{ & Usuario.h \\ \hline
+		Atributo idUsuario & protected long & protected: long idUsuario; & Usuario.h \\ \hline
+		Atributo contrasena & private string & private: string contrasena; & Usuario.h \\ \hline
+		Operación iniciarSesion() & public bool & bool iniciarSesion(); & Usuario.h / .cpp \\ \hline
 		
-		public:
-		bool registrarEvaluacion();
+		Clase Propietario & <<Actor>> & class Propietario : public Usuario \{ & Propietario.h \\ \hline
+		Relación Generalización & Herencia Nativa & : public Usuario & Propietario.h \\ \hline
+		Asociación Propietario $\leftrightarrow$ Mascota & Cardinalidad 0..* & Mascota * mascotas; (puntero simple, plantilla nativa) & Propietario.h \\ \hline
 		
-		private:
-		Veterinario * veterinario;
-	};
-	#endif
-\end{lstlisting}
-
-\textbf{2. Clase HistorialMedico}
-\begin{lstlisting}[caption={Clase HistorialMedico (HistorialMedico.h).}]
-	#ifndef _HISTORIALMEDICO_H
-	#define _HISTORIALMEDICO_H
-	
-	#include <string>
-	using namespace std;
-	
-	// <<Entity>>
-	class HistorialMedico {
-		private:
-		long idHistorial;
-		string alergias;
-		string cirugias;
-		string antecedentesGeneticos;
-		long idMascota;
-		string desparacitaciones;
+		Clase Veterinario & <<Actor>> & class Veterinario : public Usuario \{ & Veterinario.h \\ \hline
+		Atributo numLicencia & private string & private: string numLicencia; & Veterinario.h \\ \hline
 		
-		public:
-		bool registrarAntecedente();
-		void actualizarHistorial();
-	};
-	#endif
-\end{lstlisting}
-\newpage
-
-\textbf{3. Clase Mascota}
-\begin{lstlisting}[caption={Clase Mascota (Mascota.h).}]
-	#ifndef _MASCOTA_H
-	#define _MASCOTA_H
-	
-	#include <string>
-	using namespace std;
-	#include "HistorialMedico.h"
-	
-	class EvaluacionVeterinaria;
-	class Propietario;
-	class Vacuna;
-	
-	// <<Entity>>
-	class Mascota {
-		public:
-		long idMascota;
-		string nombre;
+		Clase Mascota & <<Entity>> & class Mascota \{ & Mascota.h \\ \hline
+		Atributo idMascota & public long & public: long idMascota; & Mascota.h \\ \hline
+		Atributo nombre & public string & public: string nombre; & Mascota.h \\ \hline
+		Atributo pesoKg (Mutación) & private float & private: float pesoKg; & Mascota.h \\ \hline
+		Operación calcularDosis() & public float & float calcularDosisRecomendada(); & Mascota.h / .cpp \\ \hline
+		Asociación Mascota $\leftrightarrow$ Propietario & Cardinalidad 1 & Propietario* propietario; & Mascota.h \\ \hline
 		
-		private:
-		string especie;
-		string raza;
-		string fotosMascota;
-		string fechaNacimiento;
-		long idUsuario;
-		HistorialMedico historial;
+		Clase HistorialMedico & <<Entity>> & class HistorialMedico \{ & HistorialMedico.h \\ \hline
+		Composición Mascota $\blacklozenge$ Historial & Cardinalidad 1:1 (Por Valor) & HistorialMedico historial; & Mascota.h \\ \hline
 		
-		public:
-		EvaluacionVeterinaria * evaluaciones;
-		bool registrarMascota();
-		void actualizarDatos();
-		void cambiarDisponibilidad();
-		Propietario * propietario;
+		Clase Vacuna & <<Entity>> & class Vacuna \{ & Vacuna.h \\ \hline
+		Atributo idVacuna & private long & private: long idVacuna; & Vacuna.h \\ \hline
 		
-		private:
-		Vacuna * vacunas;
-		float pesoKg;
+		Clase Asociativa MascotaVacuna & <<Entity>> M:N & class MascotaVacuna \{ & MascotaVacuna.h \\ \hline
+		Vínculo MascotaVacuna $\to$ Mascota & \textbf{No generado como referencia por objeto} & long idMascota; (clave foránea por valor, sin puntero \texttt{Mascota*}) & MascotaVacuna.h \\ \hline
+		Vínculo MascotaVacuna $\to$ Vacuna & \textbf{No generado como referencia por objeto} & long idVacuna; (clave foránea por valor, sin puntero \texttt{Vacuna*}) & MascotaVacuna.h \\ \hline
+		Asociación Vacuna $\leftrightarrow$ MascotaVacuna & Cardinalidad Múltiple & \textbf{Sin representación en el código generado.} Vacuna.h no declara ningún miembro que referencie a MascotaVacuna & Vacuna.h \\ \hline
 		
-		public:
-		float calcularDosisRecomendada();
-	};
-	#endif
-\end{lstlisting}
-
-\textbf{4. Clase MascotaVacuna}
-\begin{lstlisting}[caption={Clase MascotaVacuna (MascotaVacuna.h).}]
-	#ifndef _MASCOTAVACUNA_H
-	#define _MASCOTAVACUNA_H
+		Clase EvaluacionVeterinaria & <<Entity>> & class EvaluacionVeterinaria \{ & EvaluacionVeterinaria.h \\ \hline
+		Asociación Mascota $\to$ Evaluación & Unidireccional 0..* & EvaluacionVeterinaria * evaluaciones; (puntero simple, plantilla nativa) & Mascota.h \\ \hline
+		Asociación Veterinario $\leftrightarrow$ Evaluación & Bidireccional Simple 0..* & EvaluacionVeterinaria * evaluacionesRegistradas; (puntero simple, plantilla nativa) & Veterinario.h \\ \hline
+	\end{longtable}
 	
-	#include <string>
-	using namespace std;
+	\newpage
+	\textbf{Anexo D --- Fragmentos de código fuente representativos}
+	\label{anexo:codigo_generado}
 	
-	// <<Entity>>
-	class MascotaVacuna {
-		private:
-		long idMascotaVacuna;
-		long idMascota;
-		long idVacuna;
-		string fechaAplicacion;
-		string proximaDosis;
+	A continuación se exponen las definiciones de las estructuras físicas mapeadas e instanciadas por el motor de generación M2T de BOUML para las clases del subsistema sanitario de MundiPets:
+	
+	\textbf{1. Clase EvaluacionVeterinaria}
+	\begin{lstlisting}[caption={Clase EvaluacionVeterinaria (EvaluacionVeterinaria.h).}]
+		#ifndef _EVALUACIONVETERINARIA_H
+		#define _EVALUACIONVETERINARIA_H
 		
-		public:
-		void registrarAplicacion();
-		string calcularVigencia();
-	};
-	#endif
-\end{lstlisting}
-
-\textbf{5. Clase Propietario}
-\begin{lstlisting}[caption={Clase Propietario (Propietario.h).}]
-	#ifndef _PROPIETARIO_H
-	#define _PROPIETARIO_H
-	
-	#include "Usuario.h"
-	
-	class Mascota;
-	
-	// <<Actor>>
-	class Propietario : public Usuario {
-		public:
-		bool registrarMascota();
-		bool crearPublicacion();
-		bool enviarSolicitud();
-		Mascota * mascotas;
-	};
-	#endif
-\end{lstlisting}
-
-\textbf{6. Clase Usuario}
-\begin{lstlisting}[caption={Clase Usuario (Usuario.h).}]
-	#ifndef _USUARIO_H
-	#define _USUARIO_H
-	
-	#include <string>
-	using namespace std;
-	
-	// <<Actor>>
-	class Usuario {
-		protected:
-		long idUsuario;
+		#include <string>
+		using namespace std;
 		
-		public:
-		string nombres;
+		class Veterinario;
 		
-		protected:
-		string apellidos;
-		string correo;
-		string telefono;
-		string fotoPerfil;
+		// <<Entity>>
+		class EvaluacionVeterinaria {
+			private:
+			long idEvaluacionVet;
+			string diagnostico;
+			string observaciones;
+			bool aptitudCruza;
+			bool aptitudAdopcion;
+			string fechaEvaluacion;
+			
+			public:
+			bool registrarEvaluacion();
+			
+			private:
+			Veterinario * veterinario;
+		};
+		#endif
+	\end{lstlisting}
+	
+	\textbf{2. Clase HistorialMedico}
+	\begin{lstlisting}[caption={Clase HistorialMedico (HistorialMedico.h).}]
+		#ifndef _HISTORIALMEDICO_H
+		#define _HISTORIALMEDICO_H
 		
-		public:
-		bool registrarse();
-		void actualizarPerfil();
-		bool verificarIdentidad();
-		bool iniciarSesion();
-	};
-	#endif
-\end{lstlisting}
-
-\newpage
-\textbf{7. Clase Vacuna}
-\begin{lstlisting}[caption={Clase Vacuna (Vacuna.h).}]
-	#ifndef _VACUNA_H
-	#define _VACUNA_H
-	
-	#include <string>
-	using namespace std;
-	
-	class Mascota;
-	
-	// <<Entity>>
-	class Vacuna {
-		private:
-		long idVacuna;
-		string nombreVacuna;
-		string descripcion;
+		#include <string>
+		using namespace std;
 		
-		public:
-		bool registrarVacuna();
-		void consultarVacuna();
+		// <<Entity>>
+		class HistorialMedico {
+			private:
+			long idHistorial;
+			string alergias;
+			string cirugias;
+			string antecedentesGeneticos;
+			long idMascota;
+			string desparacitaciones;
+			
+			public:
+			bool registrarAntecedente();
+			void actualizarHistorial();
+		};
+		#endif
+	\end{lstlisting}
+	\newpage
+	
+	\textbf{3. Clase Mascota}
+	\begin{lstlisting}[caption={Clase Mascota (Mascota.h).}]
+		#ifndef _MASCOTA_H
+		#define _MASCOTA_H
 		
-		private:
-		Mascota * mascota;
-	};
-	#endif
-\end{lstlisting}
-
-\textbf{8. Clase Veterinario}
-\begin{lstlisting}[caption={Clase Veterinario (Veterinario.h).}]
-	#ifndef _VETERINARIO_H
-	#define _VETERINARIO_H
-	
-	#include "Usuario.h"
-	#include <string>
-	using namespace std;
-	
-	class EvaluacionVeterinaria;
-	
-	// <<Actor>>
-	class Veterinario : public Usuario {
-		private:
-		string numeroLicencia;
+		#include <string>
+		using namespace std;
+		#include "HistorialMedico.h"
 		
-		public:
-		bool validarHistorial();
-		bool registrarEvaluacion();
+		class EvaluacionVeterinaria;
+		class Propietario;
+		class Vacuna;
 		
-		private:
-		EvaluacionVeterinaria * evaluacionesRegistradas;
-	};
-	#endif
-\end{lstlisting}
-
-\newpage
-\textbf{Anexo E --- Instrucciones detalladas de reproducibilidad}
-\label{anexo:reproducibilidad}
-
-Para reproducir de forma íntegra el ciclo completo de desarrollo guiado por modelos (MDD) y la compilación del reporte técnico a partir de los artefactos del repositorio oficial:
-
-\begin{enumerate}[leftmargin=*]
-	\item \textbf{Clonar el repositorio institucional:} Abrir una terminal de comandos y ejecutar la descarga del repositorio git mediante la instrucción: \\
-	\textit{git clone https://github.com/andymendozap03/PFC-MundiPets-MDD-EquipoH-BOUML.git}
+		// <<Entity>>
+		class Mascota {
+			public:
+			long idMascota;
+			string nombre;
+			
+			private:
+			string especie;
+			string raza;
+			string fotosMascota;
+			string fechaNacimiento;
+			long idUsuario;
+			HistorialMedico historial;
+			
+			public:
+			EvaluacionVeterinaria * evaluaciones;
+			bool registrarMascota();
+			void actualizarDatos();
+			void cambiarDisponibilidad();
+			Propietario * propietario;
+			
+			private:
+			Vacuna * vacunas;
+			float pesoKg;
+			
+			public:
+			float calcularDosisRecomendada();
+		};
+		#endif
+	\end{lstlisting}
 	
-	\item \textbf{Cargar el proyecto estructural en el entorno CASE:} Iniciar la herramienta BOUML (versión 7.11 patch 4 o superior) y abrir el archivo maestro de configuración del metamodelo situado en la ruta: \\
-	\texttt{modelo/modelo.prj}
+	\textbf{4. Clase MascotaVacuna}
+	\begin{lstlisting}[caption={Clase MascotaVacuna (MascotaVacuna.h).}]
+		#ifndef _MASCOTAVACUNA_H
+		#define _MASCOTAVACUNA_H
+		
+		#include <string>
+		using namespace std;
+		
+		// <<Entity>>
+		class MascotaVacuna {
+			private:
+			long idMascotaVacuna;
+			long idMascota;
+			long idVacuna;
+			string fechaAplicacion;
+			string proximaDosis;
+			
+			public:
+			void registrarAplicacion();
+			string calcularVigencia();
+		};
+		#endif
+	\end{lstlisting}
 	
-	\item \textbf{Ejecutar la transformación automática Modelo-a-Texto (M2T):} Dentro del explorador de proyectos de BOUML, hacer clic derecho sobre el paquete raíz \textit{modelo}, navegar hacia el menú interactivo \texttt{Generate} y seleccionar la opción \texttt{C++}. El sistema inyectará automáticamente los dieciséis archivos de cabecera e implementación en el directorio físico \texttt{generado/}, aplicando las directivas parametrizadas y resguardando los bloques protegidos.
+	\textbf{5. Clase Propietario}
+	\begin{lstlisting}[caption={Clase Propietario (Propietario.h).}]
+		#ifndef _PROPIETARIO_H
+		#define _PROPIETARIO_H
+		
+		#include "Usuario.h"
+		
+		class Mascota;
+		
+		// <<Actor>>
+		class Propietario : public Usuario {
+			public:
+			bool registrarMascota();
+			bool crearPublicacion();
+			bool enviarSolicitud();
+			Mascota * mascotas;
+		};
+		#endif
+	\end{lstlisting}
 	
-	\item \textbf{Compilar la unidad demostrable del backend:} Acceder mediante la consola de comandos a la carpeta \texttt{generado/} y ejecutar el compilador nativo GCC (g++) para enlazar las clases y el punto de entrada principal mediante la instrucción: \\
-	\textit{g++ Usuario.cpp Propietario.cpp Veterinario.cpp Mascota.cpp HistorialMedico.cpp Vacuna.cpp MascotaVacuna.cpp EvaluacionVeterinaria.cpp main.cpp -o mundipets\_demo}
+	\textbf{6. Clase Usuario}
+	\begin{lstlisting}[caption={Clase Usuario (Usuario.h).}]
+		#ifndef _USUARIO_H
+		#define _USUARIO_H
+		
+		#include <string>
+		using namespace std;
+		
+		// <<Actor>>
+		class Usuario {
+			protected:
+			long idUsuario;
+			
+			public:
+			string nombres;
+			
+			protected:
+			string apellidos;
+			string correo;
+			string telefono;
+			string fotoPerfil;
+			
+			public:
+			bool registrarse();
+			void actualizarPerfil();
+			bool verificarIdentidad();
+			bool iniciarSesion();
+		};
+		#endif
+	\end{lstlisting}
 	
-	\item \textbf{Ejecutar la unidad demostrable:} Una vez finalizada la compilación de forma exitosa sin advertencias, inicializar el archivo ejecutable resultante en el entorno local para validar la navegación de asociaciones en consola mediante la instrucción: \\
-	\textit{.\textbackslash mundipets\_demo.exe}
+	\newpage
+	\textbf{7. Clase Vacuna}
+	\begin{lstlisting}[caption={Clase Vacuna (Vacuna.h).}]
+		#ifndef _VACUNA_H
+		#define _VACUNA_H
+		
+		#include <string>
+		using namespace std;
+		
+		class Mascota;
+		
+		// <<Entity>>
+		class Vacuna {
+			private:
+			long idVacuna;
+			string nombreVacuna;
+			string descripcion;
+			
+			public:
+			bool registrarVacuna();
+			void consultarVacuna();
+			
+			private:
+			Mascota * mascota;
+		};
+		#endif
+	\end{lstlisting}
 	
-	\item \textbf{Compilar de forma nativa este informe técnico:} En caso de requerir la regeneración física de este documento PDF desde el código fuente, situarse en el directorio \texttt{docs/} y ejecutar secuencialmente las directivas de automatización: \\
-	\texttt{pdflatex informe.tex} \\
-	\texttt{biber informe} \\
-	\texttt{pdflatex informe.tex} (ejecutar dos veces adicionales para estabilizar las referencias cruzadas y los índices).
-\end{enumerate}
-
-
+	\textbf{8. Clase Veterinario}
+	\begin{lstlisting}[caption={Clase Veterinario (Veterinario.h).}]
+		#ifndef _VETERINARIO_H
+		#define _VETERINARIO_H
+		
+		#include "Usuario.h"
+		#include <string>
+		using namespace std;
+		
+		class EvaluacionVeterinaria;
+		
+		// <<Actor>>
+		class Veterinario : public Usuario {
+			private:
+			string numeroLicencia;
+			
+			public:
+			bool validarHistorial();
+			bool registrarEvaluacion();
+			
+			private:
+			EvaluacionVeterinaria * evaluacionesRegistradas;
+		};
+		#endif
+	\end{lstlisting}
+	
+	\newpage
+	\textbf{Anexo E --- Instrucciones detalladas de reproducibilidad}
+	\label{anexo:reproducibilidad}
+	
+	Para reproducir de forma íntegra el ciclo completo de desarrollo guiado por modelos (MDD) y la compilación del reporte técnico a partir de los artefactos del repositorio oficial:
+	
+	\begin{enumerate}[leftmargin=*]
+		\item \textbf{Clonar el repositorio institucional:} Abrir una terminal de comandos y ejecutar la descarga del repositorio git mediante la instrucción: \\
+		\textit{git clone https://github.com/andymendozap03/PFC-MundiPets-MDD-EquipoH-BOUML.git}
+		
+		\item \textbf{Cargar el proyecto estructural en el entorno CASE:} Iniciar la herramienta BOUML (versión 7.11 patch 4 o superior) y abrir el archivo maestro de configuración del metamodelo situado en la ruta: \\
+		\texttt{modelo/modelo.prj}
+		
+		\item \textbf{Ejecutar la transformación automática Modelo-a-Texto (M2T):} Dentro del explorador de proyectos de BOUML, hacer clic derecho sobre el paquete raíz \textit{modelo}, navegar hacia el menú interactivo \texttt{Generate} y seleccionar la opción \texttt{C++}. El sistema inyectará automáticamente los dieciséis archivos de cabecera e implementación en el directorio físico \texttt{generado/}, aplicando las directivas parametrizadas y resguardando los bloques protegidos.
+		
+		\item \textbf{Compilar la unidad demostrable del backend:} Acceder mediante la consola de comandos a la carpeta \texttt{generado/} y ejecutar el compilador nativo GCC (g++) para enlazar las clases y el punto de entrada principal mediante la instrucción: \\
+		\textit{g++ Usuario.cpp Propietario.cpp Veterinario.cpp Mascota.cpp HistorialMedico.cpp Vacuna.cpp MascotaVacuna.cpp EvaluacionVeterinaria.cpp main.cpp -o mundipets\_demo}
+		
+		\item \textbf{Ejecutar la unidad demostrable:} Una vez finalizada la compilación de forma exitosa sin advertencias, inicializar el archivo ejecutable resultante en el entorno local para validar la navegación de asociaciones en consola mediante la instrucción: \\
+		\textit{.\textbackslash mundipets\_demo.exe}
+		
+		\item \textbf{Compilar de forma nativa este informe técnico:} En caso de requerir la regeneración física de este documento PDF desde el código fuente, situarse en el directorio \texttt{docs/} y ejecutar secuencialmente las directivas de automatización: \\
+		\texttt{pdflatex informe.tex} \\
+		\texttt{biber informe} \\
+		\texttt{pdflatex informe.tex} (ejecutar dos veces adicionales para estabilizar las referencias cruzadas y los índices).
+	\end{enumerate}
+	
+	
 \end{document}
